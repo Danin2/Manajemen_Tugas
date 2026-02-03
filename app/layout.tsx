@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import StaggeredMenu from "@/components/StaggeredMenu";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -38,8 +39,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-background text-foreground font-poppins">
-        <Navbar />
-        <div className="max-w-7xl mx-auto">
+        {/* <Navbar /> */}
+        <StaggeredMenu
+          isFixed={true}
+          position="right"
+          colors={["#3b82f6", "#8b5cf6"]} // Blue to Purple gradient equivalent
+          logoUrl="/file.svg" // Using a generic placeholder for now, user can change
+          items={[
+            { label: "Dashboard", link: "/", ariaLabel: "Go to Dashboard" },
+            { label: "Tugas", link: "/tasks", ariaLabel: "View Tasks" },
+            { label: "Jadwal", link: "/schedule", ariaLabel: "View Schedule" },
+          ]}
+          menuButtonColor="#000" // Adjust based on background
+          openMenuButtonColor="#fff"
+        />
+        <div className="max-w-7xl mx-auto pt-16">
           {children}
         </div>
       </body>
