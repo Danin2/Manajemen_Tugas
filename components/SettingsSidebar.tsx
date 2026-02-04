@@ -10,8 +10,7 @@ interface SettingsSidebarProps {
 export default function SettingsSidebar({ activePage }: SettingsSidebarProps) {
     const menuItems = [
         { id: 'profile', label: 'Profil Saya', icon: User, href: '/profile' },
-        { id: 'email', label: 'Ganti Email', icon: Mail, href: '/settings/email' },
-        { id: 'security', label: 'Ganti Password', icon: Lock, href: '/settings' },
+        { id: 'security', label: 'Akun & Keamanan', icon: Lock, href: '/settings' },
         { id: 'history', label: 'Riwayat Tugas', icon: Clock, href: '/history' },
         { id: 'notifications', label: 'Notifikasi', icon: Bell, href: '/notifications' },
     ];

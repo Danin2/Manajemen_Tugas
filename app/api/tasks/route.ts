@@ -1,60 +1,90 @@
-// ============================================
-// API ROUTE: /api/tasks
-// TEMPORARY: Return empty array (no database)
-// ============================================
-
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
 // GET - Ambil semua tasks
 export async function GET() {
-  // TEMPORARY: Return data dummy
-  return NextResponse.json({
-    success: true,
-    data: [
-      {
-        id: '1',
-        title: 'Mengerjakan Soal Matematika',
-        subject: 'Matematika',
-        deadline: new Date().toISOString(),
-        priority: 'Tinggi',
-        isCompleted: false,
-        createdAt: '2026-01-28'
-      },
-      {
-        id: '2',
-        title: 'Membaca Materi Sejarah',
-        subject: 'Sejarah',
-        deadline: new Date().toISOString(),
-        priority: 'Sedang',
-        isCompleted: true,
-        createdAt: '2026-01-29'
-      }
-    ]
-  });
+  try {
+    const tasks = await prisma.task.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: tasks.map(t => ({
+        ...t,
+        id: String(t.id),
+        isCompleted: t.completed,
+        deadline: t.dueDate ? t.dueDate.toISOString() : null
+      }))
+    });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Gagal mengambil tugas' }, { status: 500 });
+  }
 }
 
-// POST - Tambah task baru (dummy)
+// POST - Tambah task baru
 export async function POST(request: Request) {
-  const body = await request.json();
-  return NextResponse.json({
-    success: true,
-    data: { id: Date.now().toString(), ...body }
-  });
+  try {
+    const body = await request.json();
+    const task = await prisma.task.create({
+      data: {
+        title: body.title,
+        subject: body.subject,
+        dueDate: body.deadline ? new Date(body.deadline) : null,
+        completed: body.isCompleted || false,
+      }
+    });
+    return NextResponse.json({
+      success: true,
+      data: { ...task, id: String(task.id), isCompleted: task.completed, deadline: task.dueDate?.toISOString() }
+    });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Gagal membuat tugas' }, { status: 500 });
+  }
 }
 
-// PUT - Update task (dummy)
+// PUT - Update task
 export async function PUT(request: Request) {
-  const body = await request.json();
-  return NextResponse.json({
-    success: true,
-    data: body
-  });
+  try {
+    const body = await request.json();
+    const { id, ...data } = body;
+
+    const task = await prisma.task.update({
+      where: { id: Number(id) },
+      data: {
+        title: data.title,
+        subject: data.subject,
+        dueDate: data.deadline ? new Date(data.deadline) : undefined,
+        completed: data.isCompleted,
+      }
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: { ...task, id: String(task.id), isCompleted: task.completed, deadline: task.dueDate?.toISOString() }
+    });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Gagal mengupdate tugas' }, { status: 500 });
+  }
 }
 
-// DELETE - Hapus task (dummy)
+// DELETE - Hapus task
 export async function DELETE(request: Request) {
-  return NextResponse.json({
-    success: true,
-    message: 'Task deleted'
-  });
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) return NextResponse.json({ success: false, error: 'ID diperlukan' }, { status: 400 });
+
+    await prisma.task.delete({
+      where: { id: Number(id) }
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Task deleted'
+    });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Gagal menghapus tugas' }, { status: 500 });
+  }
 }
