@@ -43,15 +43,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <StaggeredMenu
           isFixed={true}
           position="right"
-          colors={["#3b82f6", "#8b5cf6"]} // Blue to Purple gradient equivalent
-          logoUrl="/file.svg" // Using a generic placeholder for now, user can change
+          colors={["#3b82f6", "#8b5cf6"]}
+          logoUrl="/file.svg"
           items={[
             { label: "Dashboard", link: "/", ariaLabel: "Go to Dashboard" },
             { label: "Tugas", link: "/tasks", ariaLabel: "View Tasks" },
             { label: "Jadwal", link: "/schedule", ariaLabel: "View Schedule" },
           ]}
-          menuButtonColor="#000" // Adjust based on background
-          openMenuButtonColor="#fff"
+          displayItemNumbering={false}
         />
         <div className="max-w-7xl mx-auto pt-16">
           {children}

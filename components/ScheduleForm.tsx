@@ -1,8 +1,3 @@
-// ============================================
-// SCHEDULE FORM COMPONENT
-// Form untuk tambah/edit jadwal
-// ============================================
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -17,35 +12,20 @@ interface ScheduleFormProps {
 
 export default function ScheduleForm({ schedule, onSubmit, onCancel }: ScheduleFormProps) {
   const [day, setDay] = useState<Day>('Senin');
-  const [subject, setSubject] = useState<string>('');
+  // ✅ FIX BARIS 22: Ubah dari string ke Subject | ''
+  const [subject, setSubject] = useState<Subject | ''>('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [room, setRoom] = useState('');
 
-  // Daftar hari
   const days: Day[] = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 
-  // Daftar mata pelajaran (sama dengan Task)
   const subjects: Subject[] = [
-    "Matematika",
-    "Bahasa Indonesia",
-    "Bahasa Inggris",
-    "Fisika",
-    "Kimia",
-    "Biologi",
-    "Sejarah",
-    "Geografi",
-    "Ekonomi",
-    "PKL",
-    "PPKN",
-    "Penjaskes",
-    "Seni Budaya",
-    "Produktif TKJ",
-    "Produktif RPL",
-    "Lainnya"
+    "Matematika", "Bahasa Indonesia", "Bahasa Inggris", "Fisika", "Kimia", "Biologi",
+    "Sejarah", "Geografi", "Ekonomi", "PKL", "PPKN", "Penjaskes", "Seni Budaya",
+    "Produktif TKJ", "Produktif RPL", "Lainnya"
   ];
 
-  // Load data saat edit mode
   useEffect(() => {
     if (schedule) {
       setDay(schedule.day);
@@ -56,136 +36,125 @@ export default function ScheduleForm({ schedule, onSubmit, onCancel }: ScheduleF
     }
   }, [schedule]);
 
-  // Handle Submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validasi
-    if (!subject) {
-      alert('Pilih mata pelajaran!');
-      return;
-    }
-    if (!startTime || !endTime) {
-      alert('Isi waktu mulai dan selesai!');
+    if (!subject || !startTime || !endTime) {
+      alert('Mohon lengkapi data!');
       return;
     }
     if (startTime >= endTime) {
-      alert('Waktu selesai harus lebih dari waktu mulai!');
+      alert('Waktu selesai harus > mulai!');
       return;
     }
 
-    // Buat object schedule
+    // ✅ FIX BARIS 57: Cast subject ke Subject type
     const scheduleData: Schedule = {
       id: schedule?.id || generateId('schedule'),
       day,
-      subject,
+      subject: subject as Subject,  // ✅ Tambahkan type assertion
       startTime,
       endTime,
-      room: room.trim() || undefined,  // Kalau kosong, jadi undefined
+      room: room.trim() || undefined,
     };
 
     onSubmit(scheduleData);
   };
 
+  const inputClass = "w-full px-4 py-3 border-2 border-black dark:border-white bg-transparent text-black dark:text-white focus:outline-none focus:ring-4 focus:ring-black/10 dark:focus:ring-white/10 font-bold";
+  const labelClass = "block text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2";
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      
+    <form onSubmit={handleSubmit} className="space-y-6 mt-2">
+
       {/* Hari */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Hari <span className="text-red-500">*</span>
-        </label>
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-          {days.map((d) => (
-            <button
-              key={d}
-              type="button"
-              onClick={() => setDay(d)}
-              className={`
-                px-3 py-2 rounded-lg font-medium transition-colors text-sm
-                ${day === d
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-                }
-              `}
-            >
-              {d}
-            </button>
-          ))}
+        <label className={labelClass}>Hari</label>
+        <div className="flex flex-wrap gap-2">
+          {days.map((d) => {
+            const isSelected = day === d;
+            return (
+              <button
+                key={d}
+                type="button"
+                onClick={() => setDay(d)}
+                className={`
+                  px-3 py-2 text-xs font-black uppercase tracking-wider border-2
+                  transition-colors
+                  ${isSelected
+                    ? 'bg-black border-black text-white dark:bg-white dark:border-white dark:text-black'
+                    : 'bg-transparent border-gray-200 dark:border-gray-800 text-gray-500 hover:border-black dark:hover:border-white hover:text-black dark:hover:text-white'
+                  }
+                `}
+              >
+                {d}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Mata Pelajaran */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Mata Pelajaran <span className="text-red-500">*</span>
-        </label>
+        <label className={labelClass}>Mata Pelajaran</label>
         <select
           value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+          onChange={(e) => setSubject(e.target.value as Subject | '')}
         >
-          <option value="">-- Pilih Mata Pelajaran --</option>
+          <option value="">-- PILIH MAPEL --</option>
           {subjects.map(subj => (
             <option key={subj} value={subj}>{subj}</option>
           ))}
         </select>
       </div>
 
-      {/* Waktu Mulai & Selesai */}
+      {/* Waktu */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Waktu Mulai <span className="text-red-500">*</span>
-          </label>
+          <label className={labelClass}>Mulai</label>
           <input
             type="time"
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Waktu Selesai <span className="text-red-500">*</span>
-          </label>
+          <label className={labelClass}>Selesai</label>
           <input
             type="time"
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
           />
         </div>
       </div>
 
-      {/* Ruangan (Opsional) */}
+      {/* Ruangan */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Ruangan (Opsional)
-        </label>
+        <label className={labelClass}>Ruangan (Opsional)</label>
         <input
           type="text"
           value={room}
           onChange={(e) => setRoom(e.target.value)}
-          placeholder="Contoh: Lab Komputer 1"
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+          placeholder="LAB 1"
+          className={inputClass}
         />
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="flex gap-4 pt-4 border-t-4 border-black dark:border-white">
         <button
           type="button"
           onClick={onCancel}
-          className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-medium"
+          className="flex-1 py-4 border-2 border-transparent hover:border-black dark:hover:border-white font-black uppercase tracking-widest text-sm transition-colors"
         >
           Batal
         </button>
         <button
           type="submit"
-          className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+          className="flex-1 py-4 bg-black text-white dark:bg-white dark:text-black font-black uppercase tracking-widest text-sm hover:opacity-80 transition-opacity"
         >
-          {schedule ? '💾 Simpan Perubahan' : '➕ Tambah Jadwal'}
+          {schedule ? 'Simpan' : 'Tambah'}
         </button>
       </div>
     </form>

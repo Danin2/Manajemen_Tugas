@@ -15,7 +15,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 export default function SchedulePage() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // View mode: 'week' atau 'day'
   const [viewMode, setViewMode] = useState<'week' | 'day'>('week');
   const [selectedDay, setSelectedDay] = useState<Day>('Senin');
@@ -29,7 +29,7 @@ export default function SchedulePage() {
   // Load data dari API
   useEffect(() => {
     fetchSchedules();
-    
+
     // Set selectedDay ke hari ini
     const today = days[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
     setSelectedDay(today);
@@ -39,7 +39,7 @@ export default function SchedulePage() {
     try {
       const res = await fetch('/api/schedules');
       const json = await res.json();
-      
+
       const schedulesNormalized: Schedule[] = (json.data || []).map((s: any) => ({
         id: s.id ?? s._id ?? String(s._id ?? ''),
         day: s.day,
@@ -48,7 +48,7 @@ export default function SchedulePage() {
         endTime: s.endTime,
         room: s.room,
       }));
-      
+
       setSchedules(schedulesNormalized);
     } catch (error) {
       console.error('Error fetching schedules:', error);
@@ -99,7 +99,7 @@ export default function SchedulePage() {
         const json = await res.json();
         setSchedules([...schedules, json.data]);
       }
-      
+
       setIsModalOpen(false);
       setEditingSchedule(undefined);
     } catch (error) {
@@ -113,12 +113,9 @@ export default function SchedulePage() {
   };
 
   // Sort by time
-  const sortedSchedules = [...schedules].sort((a, b) => 
+  const sortedSchedules = [...schedules].sort((a, b) =>
     a.startTime.localeCompare(b.startTime)
   );
-
-  // Filter by selected day (untuk day view)
-  const todaySchedules = sortedSchedules.filter(s => s.day === selectedDay);
 
   // Group by day (untuk week view)
   const schedulesByDay: Record<Day, Schedule[]> = {
@@ -139,218 +136,179 @@ export default function SchedulePage() {
     return <LoadingSpinner message="Memuat jadwal..." />;
   }
 
+  // View Mode Helpers
+  // Since we replaced list/grid logic with custom UI, we might handle 'day' and 'week' differently
+  // For now, mapping 'list' to 'Week View with Boxes' and 'grid' to 'Table View'
+  const isListView = viewMode === 'week'; // reusing existing state variable names even if UI text says 'List' vs 'Grid'
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6 space-y-6">
-      
-      {/* Hero Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 p-8 shadow-2xl">
-        <div className="absolute top-0 right-0 -mr-12 -mt-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-5xl font-black text-white mb-2 tracking-tight">
-              📅 Jadwal Pelajaran
-            </h1>
-            <p className="text-white/90 text-lg">
-              Atur jadwal pelajaran mingguan kamu dengan rapi
-            </p>
-          </div>
-          <button 
-            className="group px-8 py-4 bg-white text-cyan-600 rounded-2xl hover:bg-cyan-50 transition-all duration-300 font-black shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center gap-2"
-            onClick={handleAddNew}
-          >
-            <span className="text-2xl group-hover:rotate-90 transition-transform duration-300">➕</span>
-            Tambah Jadwal
-          </button>
-        </div>
-      </div>
+    <main className="min-h-screen bg-white dark:bg-gray-950 p-6 md:p-12 transition-colors duration-300">
 
-      {/* View Mode Toggle - Modern Pills */}
-      <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 p-6">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500"></div>
-        
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* View Mode Buttons */}
-          <div className="flex gap-3">
-            <button
-              onClick={() => setViewMode('week')}
-              className={`px-6 py-3 rounded-2xl font-bold transition-all duration-300 hover:-translate-y-1 flex items-center gap-2 ${
-                viewMode === 'week'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
-            >
-              <span className="text-xl">📊</span>
-              Tampilan Mingguan
-            </button>
-            <button
-              onClick={() => setViewMode('day')}
-              className={`px-6 py-3 rounded-2xl font-bold transition-all duration-300 hover:-translate-y-1 flex items-center gap-2 ${
-                viewMode === 'day'
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
-            >
-              <span className="text-xl">📋</span>
-              Tampilan Harian
-            </button>
-          </div>
-
-          {/* Day Selector (untuk day view) */}
-          {viewMode === 'day' && (
-            <select
-              value={selectedDay}
-              onChange={(e) => setSelectedDay(e.target.value as Day)}
-              className="px-6 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-2xl bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 font-bold cursor-pointer"
-            >
-              {days.map(day => (
-                <option key={day} value={day}>📅 {day}</option>
-              ))}
-            </select>
-          )}
-        </div>
-      </div>
-
-      {/* Content */}
-      {schedules.length === 0 ? (
-        // Empty State - Modern
-        <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 p-16 text-center">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-300 to-gray-400"></div>
-          <div className="text-8xl mb-6 animate-bounce">📅</div>
-          <h3 className="text-3xl font-black text-gray-800 dark:text-white mb-3">
-            Belum ada jadwal
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg">
-            Klik tombol "Tambah Jadwal" untuk membuat jadwal pertama kamu!
-          </p>
-          <button 
-            className="group px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-2xl hover:shadow-2xl transition-all duration-300 font-black hover:-translate-y-1 flex items-center gap-2 mx-auto"
-            onClick={handleAddNew}
-          >
-            <span className="text-2xl group-hover:rotate-90 transition-transform duration-300">➕</span>
-            Tambah Jadwal Pertama
-          </button>
-        </div>
-      ) : viewMode === 'week' ? (
-        // Week View - Modern Grid
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {days.map(day => (
-            <div 
-              key={day} 
-              className="relative overflow-hidden rounded-3xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
-            >
-              {/* Day Header with Gradient */}
-              <div className={`p-4 bg-gradient-to-r ${
-                day === 'Senin' ? 'from-red-500 to-pink-500' :
-                day === 'Selasa' ? 'from-orange-500 to-yellow-500' :
-                day === 'Rabu' ? 'from-green-500 to-emerald-500' :
-                day === 'Kamis' ? 'from-cyan-500 to-blue-500' :
-                day === 'Jumat' ? 'from-blue-500 to-purple-500' :
-                day === 'Sabtu' ? 'from-purple-500 to-pink-500' :
-                'from-pink-500 to-rose-500'
-              }`}>
-                <h3 className="text-xl font-black text-white text-center tracking-tight">
-                  {day}
-                </h3>
-                <p className="text-white/80 text-center text-sm font-medium mt-1">
-                  {schedulesByDay[day].length} jadwal
-                </p>
-              </div>
-
-              {/* Schedule Items */}
-              <div className="p-4 space-y-3">
-                {schedulesByDay[day].length > 0 ? (
-                  schedulesByDay[day].map(schedule => (
-                    <div
-                      key={schedule.id}
-                      className="group p-3 rounded-xl bg-gray-50 dark:bg-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 dark:hover:from-cyan-900/20 dark:hover:to-blue-900/20 transition-all duration-200 cursor-pointer border border-gray-200 dark:border-gray-600 hover:border-cyan-300"
-                      onClick={() => handleEdit(schedule)}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors truncate">
-                            {schedule.subject}
-                          </p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">
-                            ⏰ {schedule.startTime} - {schedule.endTime}
-                          </p>
-                          {schedule.room && (
-                            <p className="text-xs text-gray-500 dark:text-gray-500 mt-1 truncate">
-                              📍 {schedule.room}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-3xl mb-2">😴</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                      Tidak ada jadwal
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        // Day View - Detail Cards
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
         <div>
-          {todaySchedules.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {todaySchedules.map(schedule => (
-                <ScheduleCard
-                  key={schedule.id}
-                  schedule={schedule}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              ))}
+          <h1 className="text-6xl md:text-8xl font-black text-black dark:text-white tracking-tighter uppercase leading-[0.9]">
+            Schedule
+          </h1>
+          <div className="h-2 w-24 bg-blue-600 mt-6 mb-6"></div>
+          <p className="text-gray-600 dark:text-gray-300 text-xl max-w-2xl font-light">
+            Your weekly timetable. Plan ahead. Never miss a class.
+          </p>
+        </div>
+
+        {/* View Toggle */}
+        <div className="flex border-2 border-black dark:border-white">
+          <button
+            onClick={() => setViewMode('week')}
+            className={`px-6 py-3 font-bold uppercase tracking-wider text-sm transition-colors ${viewMode === 'week'
+                ? 'bg-black text-white dark:bg-white dark:text-black'
+                : 'bg-transparent text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900'
+              }`}
+          >
+            List View
+          </button>
+          <button
+            onClick={() => setViewMode('day')}
+            className={`px-6 py-3 font-bold uppercase tracking-wider text-sm transition-colors ${viewMode === 'day'
+                ? 'bg-black text-white dark:bg-white dark:text-black'
+                : 'bg-transparent text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 border-l-2 border-black dark:border-white'
+              }`}
+          >
+            Grid View
+          </button>
+        </div>
+      </div>
+
+      {isLoading ? (
+        <LoadingSpinner message="LOADING..." />
+      ) : (
+        <>
+          {viewMode === 'week' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+              {['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'].map(d_str => {
+                const day = d_str as Day;
+                const daySchedules = schedules.filter(s => s.day === day);
+                if (daySchedules.length === 0) return null;
+
+                return (
+                  <div key={day} className="flex flex-col">
+                    <div className="border-b-4 border-black dark:border-white mb-6 pb-2">
+                      <h2 className="text-4xl font-black text-black dark:text-white uppercase tracking-tighter">
+                        {day}
+                      </h2>
+                    </div>
+
+                    <div className="space-y-4">
+                      {daySchedules
+                        .sort((a, b) => a.startTime.localeCompare(b.startTime))
+                        .map(schedule => (
+                          <div
+                            key={schedule.id}
+                            className="group p-5 border-2 border-gray-200 dark:border-gray-800 hover:border-black dark:hover:border-white transition-all bg-white dark:bg-gray-900 relative"
+                          >
+                            <div className="flex justify-between items-start mb-2">
+                              <p className="font-mono text-sm font-bold text-gray-500 dark:text-gray-400">
+                                {schedule.startTime} - {schedule.endTime}
+                              </p>
+                              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button
+                                  onClick={() => handleEdit(schedule)}
+                                  className="text-xs font-bold uppercase hover:text-blue-600"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => handleDelete(schedule.id)}
+                                  className="text-xs font-bold uppercase hover:text-red-600"
+                                >
+                                  Del
+                                </button>
+                              </div>
+                            </div>
+                            <h3 className="text-xl font-bold text-black dark:text-white uppercase leading-none mb-2">
+                              {schedule.subject}
+                            </h3>
+                            {schedule.room && (
+                              <p className="text-sm font-mono text-gray-400 dark:text-gray-500 uppercase">
+                                RM {schedule.room}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           ) : (
-            <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 p-16 text-center">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-300 to-gray-400"></div>
-              <div className="text-8xl mb-6">📭</div>
-              <h3 className="text-3xl font-black text-gray-800 dark:text-white mb-3">
-                Tidak ada jadwal di hari {selectedDay}
+            // Grid View - Clean Table Style (Mapped to 'day' state)
+            <div className="overflow-x-auto border-2 border-black dark:border-white">
+              <div className="grid grid-cols-7 min-w-[1000px] divide-x-2 divide-black dark:divide-white">
+                {['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'].map(d_str => {
+                  const day = d_str as Day;
+                  return (
+                    <div key={day} className="bg-white dark:bg-gray-950">
+                      <div className="p-4 bg-black dark:bg-white text-white dark:text-black text-center font-bold uppercase tracking-widest text-sm">
+                        {day}
+                      </div>
+                      <div className="p-2 space-y-2 min-h-[300px]">
+                        {schedules
+                          .filter(s => s.day === day)
+                          .sort((a, b) => a.startTime.localeCompare(b.startTime))
+                          .map(schedule => (
+                            <div
+                              key={schedule.id}
+                              className="p-3 border border-gray-200 dark:border-gray-800 hover:border-black dark:hover:border-white transition-colors cursor-pointer group"
+                              onClick={() => handleEdit(schedule)}
+                            >
+                              <p className="text-[10px] font-mono font-bold text-gray-500 dark:text-gray-400 mb-1">
+                                {schedule.startTime}
+                              </p>
+                              <p className="font-bold text-sm text-black dark:text-white uppercase leading-tight">
+                                {schedule.subject}
+                              </p>
+                              {schedule.room && (
+                                <p className="text-[10px] text-gray-400 mt-1 uppercase truncate">
+                                  {schedule.room}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {schedules.length === 0 && (
+            <div className="py-24 border-2 border-dashed border-gray-200 dark:border-gray-800 text-center">
+              <h3 className="text-2xl font-black text-gray-300 dark:text-gray-700 uppercase tracking-tight mb-4">
+                Schedule Empty
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg">
-                Klik tombol "Tambah Jadwal" untuk membuat jadwal baru!
+              <p className="text-gray-400 dark:text-gray-600 font-mono text-sm max-w-md mx-auto mb-8">
+                Setup your weekly routine.
               </p>
             </div>
           )}
-        </div>
+        </>
       )}
 
-      {/* Summary - Modern Stats */}
-      {schedules.length > 0 && (
-        <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 p-8">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500"></div>
-          <div className="flex flex-wrap gap-8 justify-center text-center">
-            <div className="group">
-              <p className="text-5xl font-black bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
-                {schedules.length}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400 font-semibold uppercase tracking-wider">Total Jadwal</p>
-            </div>
-            {days.map(day => (
-              <div key={day} className="group">
-                <p className="text-5xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
-                  {schedulesByDay[day].length}
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 font-semibold uppercase tracking-wider">{day}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Floating Add Button */}
+      <button
+        onClick={handleAddNew}
+        className="fixed bottom-8 right-8 w-16 h-16 bg-black dark:bg-white text-white dark:text-black rounded-full shadow-lg flex items-center justify-center text-4xl hover:scale-110 transition-transform z-30"
+        aria-label="Add Schedule"
+      >
+        ＋
+      </button>
 
       {/* Modal Form */}
       <Modal
         isOpen={isModalOpen}
         onClose={handleFormCancel}
-        title={editingSchedule ? '✏️ Edit Jadwal' : '➕ Tambah Jadwal Baru'}
+        title={editingSchedule ? 'EDIT SCHEDULE' : 'NEW SCHEDULE'}
       >
         <ScheduleForm
           schedule={editingSchedule}

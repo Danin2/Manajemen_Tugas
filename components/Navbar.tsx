@@ -24,7 +24,7 @@ export default function Navbar() {
   return (
     <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-lg sticky top-0 z-50 border-b border-gray-200/50 dark:border-gray-700/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center py-6 px-0">
           
           {/* Logo / Judul dengan Gradient */}
           <div className="flex-shrink-0">
@@ -42,7 +42,7 @@ export default function Navbar() {
           </div>
 
           {/* Menu Navigasi Desktop */}
-          <div className="hidden md:flex items-center space-x-2">
+          <div className="hidden md:flex items-center gap-5">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               
@@ -53,7 +53,7 @@ export default function Navbar() {
                   className={`
                     relative px-5 py-2.5 rounded-xl
                     font-medium transition-all duration-300
-                    flex items-center space-x-2
+                    flex items-center space-x-2 whitespace-nowrap
                     ${
                       isActive
                         ? 'text-white'
@@ -84,8 +84,6 @@ export default function Navbar() {
 
           {/* Right Section */}
           <div className="flex items-center space-x-4">
-            <DarkModeToggle />
-            
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -115,6 +113,11 @@ export default function Navbar() {
                 )}
               </svg>
             </button>
+            
+            {/* Dark Mode Toggle - Desktop Only */}
+            <div className="hidden md:flex">
+              <DarkModeToggle />
+            </div>
           </div>
         </div>
       </div>
@@ -123,10 +126,11 @@ export default function Navbar() {
       <div
         className={`
           md:hidden overflow-hidden transition-all duration-300 ease-in-out
-          ${mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}
+          ${mobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}
         `}
       >
-        <div className="px-4 py-3 space-y-2 bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur-sm">
+        {/* Menu Items Section */}
+        <div className="px-4 py-6 space-y-4 bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             
@@ -152,6 +156,14 @@ export default function Navbar() {
               </Link>
             );
           })}
+        </div>
+
+        {/* Dark Mode Toggle Section - Terpisah */}
+        <div className="px-4 py-4 bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur-sm">
+          <div className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <span className="font-medium text-gray-700 dark:text-gray-300">Ubah Tema</span>
+            <DarkModeToggle />
+          </div>
         </div>
       </div>
     </nav>

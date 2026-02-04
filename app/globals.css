@@ -6,14 +6,20 @@
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
-  
+
   /* Modern Color Palette */
-  --primary: #7c3aed;      /* Purple */
-  --secondary: #ec4899;    /* Pink */
-  --accent: #06b6d4;       /* Cyan */
-  --success: #10b981;      /* Green */
-  --warning: #f59e0b;      /* Amber */
-  --danger: #ef4444;       /* Red */
+  --primary: #7c3aed;
+  /* Purple */
+  --secondary: #ec4899;
+  /* Pink */
+  --accent: #06b6d4;
+  /* Cyan */
+  --success: #10b981;
+  /* Green */
+  --warning: #f59e0b;
+  /* Amber */
+  --danger: #ef4444;
+  /* Red */
 }
 
 .dark {
@@ -36,7 +42,7 @@ body {
 }
 
 /* Smooth transition saat ganti mode */
-body, 
+body,
 body * {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -46,7 +52,7 @@ body * {
   .font-poppins {
     @apply font-[family-name:var(--font-poppins)];
   }
-  
+
   .font-inter {
     @apply font-[family-name:var(--font-inter)];
   }
@@ -62,11 +68,11 @@ body * {
 
   /* Glowing Effects */
   .glow-purple {
-    @apply shadow-[0_0_20px_rgba(147,51,234,0.3)];
+    @apply shadow-[0_0_20px_rgba(147, 51, 234, 0.3)];
   }
 
   .glow-cyan {
-    @apply shadow-[0_0_20px_rgba(6,182,212,0.3)];
+    @apply shadow-[0_0_20px_rgba(6, 182, 212, 0.3)];
   }
 }
 
@@ -75,6 +81,7 @@ body * {
     transform: translateY(100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -82,9 +89,12 @@ body * {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
