@@ -148,12 +148,11 @@ export default function SchedulePage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
         <div>
           <h1 className="text-6xl md:text-8xl font-black text-black dark:text-white tracking-tighter uppercase leading-[0.9]">
-            Schedule
+            Jadwal
           </h1>
           <div className="h-2 w-24 bg-blue-600 mt-6 mb-6"></div>
           <p className="text-gray-600 dark:text-gray-300 text-xl max-w-2xl font-light">
-            Your weekly timetable. Plan ahead. Never miss a class.
-          </p>
+            Jadwal mingguan Anda. Rencanakan sebelumnya. Jangan pernah melewatkan kelas.</p>
         </div>
 
         {/* View Toggle */}
@@ -165,7 +164,7 @@ export default function SchedulePage() {
                 : 'bg-transparent text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900'
               }`}
           >
-            List View
+            Tampilan List
           </button>
           <button
             onClick={() => setViewMode('day')}
@@ -174,7 +173,7 @@ export default function SchedulePage() {
                 : 'bg-transparent text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 border-l-2 border-black dark:border-white'
               }`}
           >
-            Grid View
+            Tampilan Kotak
           </button>
         </div>
       </div>
@@ -308,7 +307,7 @@ export default function SchedulePage() {
       <Modal
         isOpen={isModalOpen}
         onClose={handleFormCancel}
-        title={editingSchedule ? 'EDIT SCHEDULE' : 'NEW SCHEDULE'}
+        title={editingSchedule ? 'EDIT SCHEDULE' : 'TAMBAH JADWAL'}
       >
         <ScheduleForm
           schedule={editingSchedule}

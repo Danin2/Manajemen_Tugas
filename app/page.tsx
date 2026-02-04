@@ -100,7 +100,7 @@ export default function Dashboard() {
         </h1>
         <div className="h-2 w-24 bg-blue-600 mt-6 mb-6"></div>
         <p className="text-gray-600 dark:text-gray-300 text-xl max-w-2xl font-light">
-          Overview of your academic progress and upcoming schedule. stay focused.
+          Gambaran umum kemajuan akademik Anda dan jadwal yang akan datang. Tetap fokus.
         </p>
       </div>
 
@@ -108,28 +108,28 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
         {/* Total Tasks */}
         <div className="p-6 border-2 border-black dark:border-white transition-transform hover:-translate-y-1 duration-300 bg-white dark:bg-gray-900">
-          <p className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Total Tasks</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Total Tugas</p>
           <div className="flex items-baseline gap-2">
             <span className="text-6xl font-black text-black dark:text-white">{stats.total}</span>
-            <span className="text-sm text-gray-400">items</span>
+            <span className="text-sm text-gray-400">Tugas</span>
           </div>
         </div>
 
         {/* Completed */}
         <div className="p-6 border-2 border-black dark:border-white transition-transform hover:-translate-y-1 duration-300 bg-black dark:bg-white group">
-          <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-600 mb-4">Completed</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-600 mb-4">Selesai</p>
           <div className="flex items-baseline gap-2">
             <span className="text-6xl font-black text-white dark:text-black">{stats.completed}</span>
-            <span className="text-sm text-gray-400 dark:text-gray-500">done</span>
+            <span className="text-sm text-gray-400 dark:text-gray-500">Selesai</span>
           </div>
         </div>
 
         {/* Pending */}
         <div className="p-6 border-2 border-black dark:border-white transition-transform hover:-translate-y-1 duration-300 bg-white dark:bg-gray-900">
-          <p className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Pending</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Tertunda</p>
           <div className="flex items-baseline gap-2">
             <span className="text-6xl font-black text-black dark:text-white">{stats.pending}</span>
-            <span className="text-sm text-gray-400">active</span>
+            <span className="text-sm text-gray-400">Aktif</span>
           </div>
         </div>
 
@@ -151,7 +151,7 @@ export default function Dashboard() {
         {/* Today's Tasks */}
         <div>
           <div className="flex items-center justify-between mb-8 border-b border-gray-200 dark:border-gray-800 pb-4">
-            <h2 className="text-3xl font-bold uppercase tracking-tight text-black dark:text-white">Today's Tasks</h2>
+            <h2 className="text-3xl font-bold uppercase tracking-tight text-black dark:text-white">Tugas Hari Ini</h2>
             <span className="text-sm font-bold bg-black dark:bg-white text-white dark:text-black px-3 py-1">
               {todayTasks.length}
             </span>
@@ -182,7 +182,7 @@ export default function Dashboard() {
               ))
             ) : (
               <div className="py-12 border border-dashed border-gray-300 dark:border-gray-700 text-center">
-                <p className="text-gray-400 font-mono uppercase text-sm">No tasks for today</p>
+                <p className="text-gray-400 font-mono uppercase text-sm">Tidak Ada Tugas Hari Ini</p>
               </div>
             )}
           </div>
@@ -191,7 +191,7 @@ export default function Dashboard() {
         {/* Today's Schedule */}
         <div>
           <div className="flex items-center justify-between mb-8 border-b border-gray-200 dark:border-gray-800 pb-4">
-            <h2 className="text-3xl font-bold uppercase tracking-tight text-black dark:text-white">Schedule</h2>
+            <h2 className="text-3xl font-bold uppercase tracking-tight text-black dark:text-white">Jadwal</h2>
             <span className="text-sm font-bold bg-black dark:bg-white text-white dark:text-black px-3 py-1">
               {todaySchedules.length}
             </span>

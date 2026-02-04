@@ -187,11 +187,11 @@ export default function TasksPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
         <div>
           <h1 className="text-6xl md:text-8xl font-black text-black dark:text-white tracking-tighter uppercase leading-[0.9]">
-            Tasks
+            Tugas
           </h1>
           <div className="h-2 w-24 bg-blue-600 mt-6 mb-6"></div>
           <p className="text-gray-600 dark:text-gray-300 text-xl max-w-2xl font-light">
-            Manage your assignments. Keep track. Get it done.
+           Kelola tugas Anda. Pantau perkembangannya. Selesaikan.
           </p>
         </div>
         <button
@@ -199,17 +199,17 @@ export default function TasksPage() {
           onClick={handleAddNew}
         >
           <span className="text-xl leading-none">＋</span>
-          Add New Task
+          Tambahkan Tugas Baru
         </button>
       </div>
 
       {/* Quick Filters - Tab Style */}
       <div className="flex flex-wrap border-b border-gray-200 dark:border-gray-800 mb-8">
         {[
-          { value: 'all', label: 'All Tasks' },
-          { value: 'today', label: 'Today' },
-          { value: 'week', label: 'This Week' },
-          { value: 'overdue', label: 'Overdue' },
+          { value: 'all', label: 'Semua Tugas' },
+          { value: 'today', label: 'Hari Ini' },
+          { value: 'week', label: 'Minggu Ini' },
+          { value: 'overdue', label: 'Terlambat' },
         ].map(qf => (
           <button
             key={qf.value}
@@ -237,7 +237,7 @@ export default function TasksPage() {
           </div>
           <input
             type="text"
-            placeholder="SEARCH TASKS..."
+            placeholder="SEARCH Tugas..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-gray-800 bg-transparent text-black dark:text-white focus:border-black dark:focus:border-white outline-none transition-colors font-mono uppercase text-sm"
@@ -250,9 +250,9 @@ export default function TasksPage() {
           onChange={(e) => setFilterStatus(e.target.value as any)}
           className="px-4 py-3 border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-black dark:text-white focus:border-black dark:focus:border-white outline-none font-mono uppercase text-sm cursor-pointer appearance-none rounded-none"
         >
-          <option value="all" className="bg-white dark:bg-gray-900 text-black dark:text-white">Status: All</option>
-          <option value="pending" className="bg-white dark:bg-gray-900 text-black dark:text-white">Status: Pending</option>
-          <option value="completed" className="bg-white dark:bg-gray-900 text-black dark:text-white">Status: Completed</option>
+          <option value="all" className="bg-white dark:bg-gray-900 text-black dark:text-white">Status: Semua</option>
+          <option value="pending" className="bg-white dark:bg-gray-900 text-black dark:text-white">Status: Tertunda</option>
+          <option value="completed" className="bg-white dark:bg-gray-900 text-black dark:text-white">Status: Selesai</option>
         </select>
 
         {/* Filter Subject */}
@@ -261,7 +261,7 @@ export default function TasksPage() {
           onChange={(e) => setFilterSubject(e.target.value)}
           className="px-4 py-3 border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-black dark:text-white focus:border-black dark:focus:border-white outline-none font-mono uppercase text-sm cursor-pointer appearance-none rounded-none"
         >
-          <option value="all" className="bg-white dark:bg-gray-900 text-black dark:text-white">Subject: All</option>
+          <option value="all" className="bg-white dark:bg-gray-900 text-black dark:text-white">Subject: Semua</option>
           {subjects.slice(1).map(subject => (
             <option key={subject} value={subject} className="bg-white dark:bg-gray-900 text-black dark:text-white">{subject}</option>
           ))}
@@ -273,10 +273,10 @@ export default function TasksPage() {
           onChange={(e) => setFilterPriority(e.target.value)}
           className="px-4 py-3 border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-black dark:text-white focus:border-black dark:focus:border-white outline-none font-mono uppercase text-sm cursor-pointer appearance-none rounded-none"
         >
-          <option value="all" className="bg-white dark:bg-gray-900 text-black dark:text-white">Priority: All</option>
-          <option value="Tinggi" className="bg-white dark:bg-gray-900 text-black dark:text-white">High</option>
-          <option value="Sedang" className="bg-white dark:bg-gray-900 text-black dark:text-white">Medium</option>
-          <option value="Rendah" className="bg-white dark:bg-gray-900 text-black dark:text-white">Low</option>
+          <option value="all" className="bg-white dark:bg-gray-900 text-black dark:text-white">Priority: Semua</option>
+          <option value="Tinggi" className="bg-white dark:bg-gray-900 text-black dark:text-white">Tinggi</option>
+          <option value="Sedang" className="bg-white dark:bg-gray-900 text-black dark:text-white">Sedang</option>
+          <option value="Rendah" className="bg-white dark:bg-gray-900 text-black dark:text-white">Rendah</option>
         </select>
       </div>
 
@@ -284,7 +284,7 @@ export default function TasksPage() {
       {(searchQuery || filterStatus !== 'all' || filterSubject !== 'all' || filterPriority !== 'all' || quickFilter !== 'all') && (
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100 dark:border-gray-900">
           <p className="text-xs uppercase tracking-widest text-gray-500">
-            Showing {processedTasks.length} results
+            Perlihatkan {processedTasks.length} Hasil
           </p>
           <button
             onClick={() => {
@@ -296,7 +296,7 @@ export default function TasksPage() {
             }}
             className="text-xs font-bold uppercase tracking-widest text-red-500 hover:text-red-600 transition-colors"
           >
-            Clear Filters
+            Hapus Filter
           </button>
         </div>
       )}
@@ -318,12 +318,12 @@ export default function TasksPage() {
         // Empty State - Minimal
         <div className="py-24 border-2 border-dashed border-gray-200 dark:border-gray-800 text-center">
           <h3 className="text-2xl font-black text-gray-300 dark:text-gray-700 uppercase tracking-tight mb-4">
-            No Tasks Found
+            Tugas Tidak Ditentukan
           </h3>
           <p className="text-gray-400 dark:text-gray-600 font-mono text-sm max-w-md mx-auto mb-8">
             {tasks.length === 0
-              ? "Your list is empty. Time to create something new."
-              : "Try adjusting your filters to find what you're looking for."
+              ? "Daftar Anda kosong. Saatnya membuat sesuatu yang baru."
+              : "Cobalah menyesuaikan filter Anda untuk menemukan apa yang Anda cari."
             }
           </p>
           {tasks.length === 0 && (
@@ -331,7 +331,7 @@ export default function TasksPage() {
               className="px-8 py-3 border-2 border-black dark:border-white text-black dark:text-white font-bold uppercase tracking-widest text-xs hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
               onClick={handleAddNew}
             >
-              Create First Task
+              Buat Tugas Pertama Anda
             </button>
           )}
         </div>

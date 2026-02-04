@@ -99,10 +99,11 @@ export default function ScheduleForm({ schedule, onSubmit, onCancel }: ScheduleF
         <select
           value={subject}
           onChange={(e) => setSubject(e.target.value as Subject | '')}
+          className={`${inputClass} dark:bg-[#1d1b31]`}
         >
-          <option value="">-- PILIH MAPEL --</option>
+          <option value="" className="bg-white dark:bg-[#1d1b31]">-- PILIH MAPEL --</option>
           {subjects.map(subj => (
-            <option key={subj} value={subj}>{subj}</option>
+            <option key={subj} value={subj} className="bg-white dark:bg-[#1d1b31]">{subj}</option>
           ))}
         </select>
       </div>
