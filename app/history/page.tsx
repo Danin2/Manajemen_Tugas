@@ -2,18 +2,27 @@ import React from 'react';
 import { Calendar, CheckCircle2 } from 'lucide-react';
 import SettingsSidebar from '@/components/SettingsSidebar';
 import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
+import { verifyToken } from "@/lib/auth";
 
 export const dynamic = 'force-dynamic';
 
 export default async function HistoryPage() {
-    const historyTasks = await prisma.task.findMany({
-        where: {
-            completed: true
-        },
-        orderBy: {
-            updatedAt: 'desc'
-        }
-    });
+    const token = (await cookies()).get("auth_token")?.value;
+    const payload = token ? verifyToken(token) : null;
+    const userId = payload?.userId ? Number(payload.userId) : null;
+
+    const historyTasks = userId
+        ? await prisma.task.findMany({
+            where: {
+                completed: true,
+                userId,
+            },
+            orderBy: {
+                updatedAt: 'desc'
+            }
+        })
+        : [];
 
     return (
         <div className="min-h-screen p-4 md:p-8 pb-20 bg-gray-50 dark:bg-[#0b0a12] font-poppins">

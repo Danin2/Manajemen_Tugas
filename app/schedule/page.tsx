@@ -284,10 +284,10 @@ export default function SchedulePage() {
           {schedules.length === 0 && (
             <div className="py-24 border-2 border-dashed border-gray-200 dark:border-gray-800 text-center">
               <h3 className="text-2xl font-black text-gray-300 dark:text-gray-700 uppercase tracking-tight mb-4">
-                Schedule Empty
+                Tugas Kosong
               </h3>
               <p className="text-gray-400 dark:text-gray-600 font-mono text-sm max-w-md mx-auto mb-8">
-                Setup your weekly routine.
+               Tambahkan Jadwal Anda
               </p>
             </div>
           )}

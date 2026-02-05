@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="min-h-screen bg-background text-foreground font-poppins">
+      <body className="min-h-screen bg-background text-foreground font-poppins" suppressHydrationWarning>
         {/* <Navbar /> */}
         <StaggeredMenu
           isFixed={true}
